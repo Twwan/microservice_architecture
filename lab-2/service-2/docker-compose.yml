@@ -1,0 +1,15 @@
+services:
+  service-2:
+    container_name: service-2
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: sh -c "npm run start"
+    ports:
+      - "3001:3001"
+    networks:
+      - lab2-net
+
+networks:
+  lab2-net:
+    external: true

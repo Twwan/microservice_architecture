@@ -3,8 +3,8 @@ server {
       listen 80;
       server_name service-1;
 
-      location / {
-        proxy_pass http://service_1:3001;
+      location /service-1/ {
+        proxy_pass http://service-1:3000;
       }
     }
 }
