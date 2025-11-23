@@ -1,0 +1,13 @@
+services:
+  mqlistener:
+    container_name: mqlistener
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: sh -c "npm run start"
+    networks:
+      - lab2-net
+
+networks:
+  lab2-net:
+    external: true
