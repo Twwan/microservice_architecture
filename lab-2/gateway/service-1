@@ -1,0 +1,10 @@
+server {
+    server {
+      listen 80;
+      server_name service-1;
+
+      location / {
+        proxy_pass http://service_1:3001;
+      }
+    }
+}
