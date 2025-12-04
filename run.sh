@@ -1,6 +1,9 @@
 echo "Build and start rabbitmq"
 (cd rabbitmq && docker-compose up -d --build)
 
+echo "Build and start logstash"
+(cd logstash && docker-compose up -d --build)
+
 echo "Build and start mqlistener"
 (cd mqlistener && docker-compose up -d --build)
 
