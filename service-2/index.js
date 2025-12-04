@@ -1,8 +1,9 @@
 import express from "express";
 import { randomUUID } from "crypto";
 import logger from "./logger.js";
+import authenticate from "./authenticate.js";
 
-const APP_PORT = process.env.APP_PORT || 3001;
+const SERVICE2_PORT = process.env.SERVICE2_PORT;
 
 const app = express();
 
@@ -13,6 +14,8 @@ app.use((req, res, next) => {
   res.setHeader("X-Request-ID", requestId);
   next();
 });
+
+app.use(authenticate);
 
 // Обработка входящих запросов
 app.get("", (req, res) => {
@@ -32,6 +35,6 @@ app.get("", (req, res) => {
   });
 });
 
-app.listen(APP_PORT, () => {
-  logger.info("Service started", { port: APP_PORT });
+app.listen(SERVICE2_PORT, () => {
+  logger.info("Service started", { port: SERVICE2_PORT });
 });

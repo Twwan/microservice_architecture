@@ -1,6 +1,6 @@
 services:
-  service-2:
-    container_name: service-2
+  auth-service:
+    container_name: auth-service
     build:
       context: .
       dockerfile: Dockerfile
@@ -8,7 +8,7 @@ services:
     env_file:
       - ../.env
     ports:
-      - "3001:3001"
+      - "3002:3002"
     networks:
       - lab2-net
 

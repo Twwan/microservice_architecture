@@ -1,8 +1,8 @@
 import winston from 'winston';
 import { createConnection } from 'net';
 
-const LOGSTASH_HOST = process.env.LOGSTASH_HOST || 'logstash';
-const LOGSTASH_PORT = parseInt(process.env.LOGSTASH_PORT || '5000', 10);
+const LOGSTASH_HOST = process.env.LOGSTASH_HOST;
+const LOGSTASH_PORT = parseInt(process.env.LOGSTASH_PORT, 10);
 
 // Транспорт для отправки логов в Logstash по TCP
 class LogstashTransport extends winston.Transport {

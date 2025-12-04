@@ -14,18 +14,20 @@ class LogstashTransport extends winston.Transport {
     this.reconnect();
   }
 
+  // Метод переподключения к Logstash
   reconnect() {
     try {
       this.client = createConnection(this.logstashPort, this.logstashHost);
       this.client.on('error', () => {
         this.client = null;
         setTimeout(() => this.reconnect(), 5000);
-    });
+      });
     } catch (error) {
       setTimeout(() => this.reconnect(), 5000);
     }
   }
 
+  // Метод логирования в Logstash
   log(info, callback) {
     if (this.client && this.client.writable) {
       const logMessage = JSON.stringify(info) + '\n';
@@ -38,20 +40,25 @@ class LogstashTransport extends winston.Transport {
 // Настройка логгера с единым форматом JSON
 const logger = winston.createLogger({
   level: 'info',
+  // Настройка формата логов
   format: winston.format.combine(
     winston.format.timestamp(),
     winston.format.json()
   ),
+  // Метаданные по умолчанию
   defaultMeta: {
-    service: 'service-2',
+    service: 'auth-service',
   },
+  // Настройка транспортов для вывода логов
   transports: [
+    // Транспорт для вывода в консоль
     new winston.transports.Console({
       format: winston.format.combine(
         winston.format.colorize(),
         winston.format.simple()
       ),
     }),
+    // Транспорт для отправки в Logstash
     new LogstashTransport({
       logstashHost: LOGSTASH_HOST,
       logstashPort: LOGSTASH_PORT,

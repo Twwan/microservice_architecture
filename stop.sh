@@ -7,6 +7,9 @@ echo "Stopping service-2"
 echo "Stopping service-1"
 (cd service-1 && docker-compose down)
 
+echo "Stopping auth-service"
+(cd auth-service && docker-compose down)
+
 echo "Stopping mqlistener"
 (cd mqlistener && docker-compose down)
 

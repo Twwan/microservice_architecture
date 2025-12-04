@@ -2,13 +2,14 @@ import express from "express";
 import amqplib from "amqplib";
 import { randomUUID } from "crypto";
 import logger from "./logger.js";
+import authenticate from "./authenticate.js";
 
 const MQ_USER = process.env.MQ_USER;
 const MQ_PASS = process.env.MQ_PASS;
 const MQ_HOST = process.env.MQ_HOST;
 const MQ_PORT = process.env.MQ_PORT;
 const CHANNEL_NAME = process.env.CHANNEL_NAME;
-const APP_PORT = process.env.APP_PORT;
+const SERVICE1_PORT = process.env.SERVICE1_PORT;
 
 const bootstrap = async () => {
   const app = express();
@@ -28,6 +29,8 @@ const bootstrap = async () => {
   );
   const channel = await connection.createChannel();
   await channel.assertQueue(CHANNEL_NAME);
+
+  app.use(authenticate);
 
   // Обработка входящих запросов
   app.get("", (req, res) => {
@@ -61,8 +64,8 @@ const bootstrap = async () => {
     });
   });
 
-  app.listen(APP_PORT, () => {
-    logger.info("Service started", { port: APP_PORT });
+  app.listen(SERVICE1_PORT, () => {
+    logger.info("Service started", { port: SERVICE1_PORT });
   });
 };
 
