@@ -5,10 +5,13 @@ services:
       context: .
       dockerfile: Dockerfile
     command: sh -c "npm run start"
+    env_file:
+      - ../.env
     ports:
       - "3001:3001"
     networks:
       - lab2-net
+
 
 networks:
   lab2-net:
