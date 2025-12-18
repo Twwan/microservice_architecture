@@ -1,65 +1,49 @@
-# Лабораторная работа 6: Авторизация в микросервисном приложении
+# Лабораторная работа 7: Создание резервной копии базы данных
 
 ## Запуск
 
 ```bash
-./run.sh
+cd database-backup
+docker-compose up -d
 ```
 
 ## Тестирование
 
-### Авторизация
-
+### Просмотр логов
 ```bash
-# 1. Регистрация пользователя
-curl -X POST http://localhost/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{"login":"testuser","password":"testpass"}'
-
-# 2. Авторизация и получение токена
-curl -X POST http://localhost/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"login":"testuser","password":"testpass"}'
+docker logs lab-app -f
 ```
 
-### Запросы к защищенным сервисам
+### 1. Наполнение базы данных
 
 ```bash
-# Запрос к service-1 с токеном (успешный)
-curl http://localhost/service-1/?test=123 \
-  -H "Authorization: Bearer YOUR_TOKEN"
-
-# Запрос к service-2 с токеном (успешный)
-curl http://localhost/service-2/?test=777 \
-  -H "Authorization: Bearer YOUR_TOKEN"
-
-# Запрос без токена (ошибка 401)
-curl http://localhost/service-1/?test=123
-
-# Запрос с невалидным токеном (ошибка 401)
-curl http://localhost/service-1/?test=123 \
-  -H "Authorization: Bearer INVALID_TOKEN"
+bash populate_data.sh
+curl http://localhost:3000/users
 ```
 
-## Просмотр логов
+### 2. Создание резервной копии
 
 ```bash
-# Логи в Logstash
-docker logs logstash -f
+bash backup.sh
+```
+
+### 3. Удаление базы данных
+
+```bash
+bash drop_database.sh
+curl http://localhost:3000/users    # Должен вернуть []
+```
+
+### 4. Восстановление из резервной копии
+
+```bash
+bash restore.sh
+curl http://localhost:3000/users    # Данные восстановлены
 ```
 
 ## Остановка
 
 ```bash
-./stop.sh
+cd database-backup
+docker-compose down
 ```
-
-## Архитектура
-
-- **Gateway** (nginx) - маршрутизация запросов
-- **Auth-Service** - микросервис авторизации (регистрация, логин, валидация токенов)
-- **Service-1** - принимает запросы, отправляет в RabbitMQ (защищен авторизацией)
-- **Service-2** - обрабатывает запросы напрямую (защищен авторизацией)
-- **MQListener** - обрабатывает сообщения из RabbitMQ
-- **Logstash** - централизованное хранение логов
-- **RabbitMQ** - брокер сообщений
